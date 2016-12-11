@@ -85,6 +85,8 @@ WSGI_APPLICATION = 'test_rest.wsgi.application'
 DATABASES = {}
 DATABASES['default'] = dj_database_url.config()
 
+ ## LOCAL ##
+
 # DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -95,6 +97,19 @@ DATABASES['default'] = dj_database_url.config()
 #        'PORT': '',
 #    }
 # }
+
+## PRODUCCION ##
+
+DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql_psycopg2',
+       'NAME': 'd1rnk4124qssrs',
+       'USER': 'pshkosxoudlico',
+       'PASSWORD': '28a064a2e39cba78893bd7e4a7dba1100bf10114e6167566a8ee63e3bce6992f',
+       'HOST': 'ec2-54-243-185-99.compute-1.amazonaws.com',
+       'PORT': '5432',
+   }
+}
 
 
 # Password validation
