@@ -60,6 +60,7 @@ def libro_detail(request, pk):
 
 @api_view(['GET', 'POST'])
 def post_user(request):
+    print "hey"
     data = json.loads(request.body)
     serializer = UserSerializer(data=data)
     if serializer.is_valid():
@@ -80,7 +81,7 @@ def get_users(request):
     return Response(response, status=200)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST', 'PUT'])
 def get_user(request, id):
     user = User.objects.get(username=id)
     serializer = UserSerializer(user)
@@ -91,11 +92,14 @@ def get_user(request, id):
     return Response(response, status=200)
 
 
-@api_view(['PUT'])
+@csrf_exempt
+@api_view(['PUT', 'GET', 'POST'])
 def update_user(request, id):
     user = User.objects.get(username=id)
     data = JSONParser().parse(request)
     data['saldo'] = str(int(data['saldo']) + int(user.saldo))
+    data['username'] = user.username
+    data['password'] = user.password
     print data
     serializer = UserSerializer(user, data=data)
     print serializer
@@ -107,13 +111,14 @@ def update_user(request, id):
 
 
 @api_view(['POST', 'PUT'])
-def transfer(request):
+def transfer(request, id):
     data = JSONParser().parse(request)
     print data
-    user_origin = User.objects.get(username=data['origin'])
+    user_origin = User.objects.get(username=id)
     user_destination = User.objects.get(username=data['destination'])
     user_origin.saldo = str(int(user_origin.saldo) - int(data['amount']))
     user_destination.saldo = str(int(user_destination.saldo) + int(data['amount']))
+    data['origin'] = user_origin.username
     serializer = TransaccionSerializer(data=data)
     print serializer
     if serializer.is_valid():
@@ -121,7 +126,8 @@ def transfer(request):
         serializer.save()
         user_origin.save()
         user_destination.save()
-        return JsonResponse(serializer.data)
+        data['amount'] = user_origin.saldo
+        return JsonResponse(data)
     return JsonResponse(serializer.errors, status=400)
 
 

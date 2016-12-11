@@ -26,7 +26,7 @@ SECRET_KEY = ')g+c1@s6ukh2ubfyd1x&!6#sxt9sv0q)#m-4yap1^hz&e)#=d$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [u'tradeit-redes.herokuapp.com']
+ALLOWED_HOSTS = [u'tradeit-redes.herokuapp.com', u'localhost']
 
 
 # Application definition
@@ -152,11 +152,11 @@ STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 
 
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost:8000',
-#     '127.0.0.1:8000',
-#     'localhost:8100',
-#     '192.168.1.109:8100',
-# )
+CORS_ORIGIN_WHITELIST = (
+    'localhost:8000',
+    '127.0.0.1:8000',
+    'localhost:8100',
+    '192.168.1.109:8100',
+)
 
-CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ORIGIN_ALLOW_ALL = True
