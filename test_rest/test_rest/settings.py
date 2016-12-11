@@ -26,7 +26,7 @@ SECRET_KEY = ')g+c1@s6ukh2ubfyd1x&!6#sxt9sv0q)#m-4yap1^hz&e)#=d$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [u'tradeit-redes.herokuapp.com']
 
 
 # Application definition
