@@ -136,9 +136,6 @@ USE_TZ = True
 STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "test_rest/static"),
-)
 
 # CORS_ORIGIN_WHITELIST = (
 #     'localhost:8000',
