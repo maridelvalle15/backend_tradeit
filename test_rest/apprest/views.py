@@ -62,12 +62,16 @@ def libro_detail(request, pk):
 def post_user(request):
     print "hey"
     data = json.loads(request.body)
-    serializer = UserSerializer(data=data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    else:
-        return JsonResponse(serializer.errors, status=400)
+    try:
+        User.objects.get(username=data['username'])
+        return Response(status=400)
+    except:
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return JsonResponse(serializer.errors, status=400)
 
 
 @api_view(['GET'])
