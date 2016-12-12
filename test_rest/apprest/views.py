@@ -83,31 +83,39 @@ def get_users(request):
 
 @api_view(['GET', 'POST', 'PUT'])
 def get_user(request, id):
-    user = User.objects.get(username=id)
-    serializer = UserSerializer(user)
-    #r = {'is_claimed': 'True', 'rating': 3.5}
-    #r = json.dumps(r)
-    #response = json.loads(r)
-    response = serializer.data
-    return Response(response, status=200)
+    data = JSONParser().parse(request)
+    password = data['password']
+    try:
+        user = User.objects.get(username=id, password=password)
+        serializer = UserSerializer(user)
+        #r = {'is_claimed': 'True', 'rating': 3.5}
+        #r = json.dumps(r)
+        #response = json.loads(r)
+        response = serializer.data
+        return Response(response, status=200)
+    except:
+        return Response(status=400)
 
 
 @csrf_exempt
 @api_view(['PUT', 'GET', 'POST'])
 def update_user(request, id):
-    user = User.objects.get(username=id)
-    data = JSONParser().parse(request)
-    data['saldo'] = str(int(data['saldo']) + int(user.saldo))
-    data['username'] = user.username
-    data['password'] = user.password
-    print data
-    serializer = UserSerializer(user, data=data)
-    print serializer
-    if serializer.is_valid():
-        print "im valid"
-        serializer.save()
-        return JsonResponse(serializer.data)
-    return JsonResponse(serializer.errors, status=400)
+    try:
+        user = User.objects.get(username=id)
+        data = JSONParser().parse(request)
+        data['saldo'] = str(int(data['saldo']) + int(user.saldo))
+        data['username'] = user.username
+        data['password'] = user.password
+        print data
+        serializer = UserSerializer(user, data=data)
+        print serializer
+        if serializer.is_valid():
+            print "im valid"
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+    except:
+        return Response(status=400)
 
 
 @api_view(['POST', 'PUT'])
@@ -120,15 +128,17 @@ def transfer(request, id):
     user_destination.saldo = str(int(user_destination.saldo) + int(data['amount']))
     data['origin'] = user_origin.username
     serializer = TransaccionSerializer(data=data)
-    print serializer
-    if serializer.is_valid():
-        print "im valid"
-        serializer.save()
-        user_origin.save()
-        user_destination.save()
-        data['amount'] = user_origin.saldo
-        return JsonResponse(data)
-    return JsonResponse(serializer.errors, status=400)
+    if int(user_origin.saldo) < 0:
+        return Response(status=400)
+    else:
+        if serializer.is_valid():
+            print "im valid"
+            serializer.save()
+            user_origin.save()
+            user_destination.save()
+            data['amount'] = user_origin.saldo
+            return JsonResponse(data)
+        return JsonResponse(serializer.errors, status=400)
 
 
 @api_view(['GET'])
